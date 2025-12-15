@@ -1,0 +1,135 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}SISREQ{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'estoque/css/estoque.css' %}">
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'estoque:dashboard' %}">SISREQ</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:dashboard' %}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:lista_materiais_publica' %}">Lista de materiais</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:listar_requisicoes' %}">Minhas requisições</a>
+            </li>
+            {% if request.user.tipo == "ADMINISTRADOR" %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:listar_materiais' %}">Materiais (admin)</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:listar_requisicoes' %}?status=PENDENTE">Requisições pendentes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:novo_movimento_estoque' %}">Entrada/Ajuste estoque</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'estoque:entrada_compra' %}">Movimentações/Empréstimos</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle"
+                 href="#"
+                 id="navbarRelatorios"
+                 role="button"
+                 data-bs-toggle="dropdown"
+                 aria-expanded="false">
+                Relatórios
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarRelatorios">
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_movimento_materiais' %}">
+                    Movimento de materiais
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_movimentacoes_estoque' %}">
+                    Movimentações/Empréstimos
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_requisicoes_status' %}">
+                    Requisições por status
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_consumo_categoria' %}">
+                    Consumo por categoria
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_consumo_trienio_materiais' %}">
+                    Consumo por material (3 anos)
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_requisicoes_periodo' %}">
+                    Requisições por período
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_consumo_usuario' %}">
+                    Consumo por usuário
+                  </a>
+                </li>
+                <li>
+                  <a class="dropdown-item" href="{% url 'estoque:relatorio_consumo_setor' %}">
+                    Consumo por setor
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {% endif %}
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav">
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <span class="navbar-text me-3">
+                {{ request.user.nome_completo }}
+              </span>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'usuarios:logout' %}">Logout</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'usuarios:login' %}">Login</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="py-4">
+      <div class="container">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      </div>
+      {% block content %}{% endblock %}
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'estoque/js/estoque.js' %}"></script>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

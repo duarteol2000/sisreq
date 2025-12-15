@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block title %}Confirmar Entrega{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Confirmar Entrega - Requisição #{{ requisicao.id }}</h2>
+  <p>Confirme a entrega dos itens abaixo. A baixa será feita com base na quantidade liberada.</p>
+  <form method="post">
+    {% csrf_token %}
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Material</th>
+          <th class="text-right">Qtd. liberada</th>
+          <th class="text-right">Qtd. em estoque</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in itens %}
+        <tr>
+          <td>{{ item.material }}</td>
+          <td class="text-right">{{ item.quantidade_liberada }}</td>
+          <td class="text-right">{{ item.material.quantidade_estoque }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <button type="submit" class="btn btn-success">Confirmar entrega</button>
+    <a href="{% url 'estoque:detalhar_requisicao' requisicao.pk %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

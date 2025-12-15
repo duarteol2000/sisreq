@@ -1,0 +1,408 @@
+SISREQ - Sistema de Requisição de Materiais
+===========================================
+
+Manual de Uso (Versão Inicial)
+==============================
+
+Este manual resume o funcionamento principal do SISREQ para:
+- usuários administradores (gestores / almoxarifado)
+- usuários funcionários (solicitantes de materiais)
+
+Sempre que algo falar em “unidade”, entenda como a combinação:
+- Prefeitura
+- Secretaria
+- Setor (para o usuário)
+
+1. PERFIS DE USUÁRIO
+--------------------
+
+1.1. ADMINISTRADOR
+-------------------
+Pode:
+- Cadastrar e editar materiais.
+- Registrar entradas e ajustes de estoque.
+- Analisar requisições (aprovar, negar, aprovar parcialmente).
+- Confirmar entregas.
+- Emitir recibos e relatórios.
+
+1.2. FUNCIONÁRIO
+----------------
+Pode:
+- Acessar a lista pública de materiais e seu saldo.
+- Criar requisições de materiais.
+- Consultar o status das suas requisições.
+- Visualizar o histórico das suas requisições.
+
+2. LOGIN NO SISTEMA
+-------------------
+
+URL principal:
+- http://localhost:8000/usuarios/login/
+
+Informações de login:
+- E-mail
+- Senha
+- Código IBGE da Prefeitura (ex.: 2307650)
+- Secretaria (selecionada após informar o IBGE)
+
+Atenção:
+- O usuário precisa estar vinculado à prefeitura e secretaria informadas.
+- Após o login, o sistema grava na sessão os IDs da prefeitura e secretaria.
+- Todas as consultas e operações são filtradas por esses IDs.
+
+3. CADASTRO DE MATERIAIS (ADMINISTRADOR)
+----------------------------------------
+
+Menu:
+- Materiais (admin) -> Novo material
+
+Campos principais:
+- Código: código interno, ex.: MAT-0001.
+- Nome: descrição do material, ex.: Lápis preto nº 2.
+- Marca: opcional, ex.: Faber-Castell.
+- Categoria: selecionar na lista (Escritório, Limpeza, etc.).
+- Descrição: detalhes adicionais (livre).
+- Unidade: UN, CX, PCT, ROLO, etc.
+- Quantidade em estoque:
+  - Pode ser utilizada para o saldo inicial, ou começar em 0.
+- Quantidade mínima:
+  - Ponto de alerta (estoque mínimo) para relatórios de ruptura.
+- Ativo:
+  - Define se o material está disponível para uso.
+
+Boas práticas:
+- Após o cadastro, NÃO alterar o campo de quantidade diretamente.
+- Usar sempre o menu de Entrada/Ajuste de estoque para mexer em quantidade.
+
+4. ENTRADAS E AJUSTES DE ESTOQUE (ADMINISTRADOR)
+------------------------------------------------
+
+Menu:
+- Entrada/Ajuste estoque
+
+Objetivo:
+- Registrar toda entrada de material no almoxarifado.
+- Registrar correções de estoque (ajustes positivos ou negativos).
+
+4.1. Registrar ENTRADA (reposição normal)
+-----------------------------------------
+
+Passo a passo:
+1) Acessar: Entrada/Ajuste estoque.
+2) Selecionar o Material.
+3) Em Tipo de movimento, escolher:
+   - ENTRADA.
+4) Informar Quantidade:
+   - Ex.: 50 (novas unidades recebidas).
+5) Em Observação, registrar a origem:
+   - Ex.: "Entrada NF 1234 / Fornecedor X".
+6) Clicar em Salvar movimento.
+
+O sistema:
+- Soma a quantidade no estoque do material.
+- Grava o movimento com:
+  - prefeitura, secretaria, material, tipo, quantidade, usuário, data/hora.
+
+4.2. Registrar AJUSTE POSITIVO
+------------------------------
+
+Situações:
+- Estoque físico maior que o valor no sistema.
+- Descoberta de caixas não contabilizadas anteriormente.
+
+Passos:
+1) Acessar: Entrada/Ajuste estoque.
+2) Selecionar o Material.
+3) Tipo de movimento:
+   - AJUSTE_POSITIVO.
+4) Informar a quantidade a acrescentar.
+5) Observação:
+   - Ex.: "Ajuste positivo - inventário 2025".
+6) Salvar.
+
+O sistema soma a quantidade ao estoque e registra o movimento.
+
+4.3. Registrar AJUSTE NEGATIVO
+------------------------------
+
+Situações:
+- Estoque físico menor que o valor no sistema.
+- Erro de digitação em entrada anterior.
+
+Passos:
+1) Acessar: Entrada/Ajuste estoque.
+2) Selecionar o Material.
+3) Tipo de movimento:
+   - AJUSTE_NEGATIVO.
+4) Informar a quantidade a diminuir.
+5) Observação:
+   - Ex.: "Ajuste negativo - correção saldo inicial".
+6) Salvar.
+
+Regras:
+- O sistema não permite que o saldo fique negativo.
+- Se a quantidade digitada for maior do que o disponível, o sistema avisa.
+
+Resumo:
+- ENTRADA: reposição normal.
+- AJUSTE_POSITIVO: correção para aumentar o saldo.
+- AJUSTE_NEGATIVO: correção para diminuir o saldo.
+
+5. LISTA PÚBLICA DE MATERIAIS
+-----------------------------
+
+Menu:
+- Lista de materiais
+
+Descrição:
+- Lista os materiais ativos da secretaria logada.
+- Mostra código, nome, unidade e quantidade em estoque.
+- Não há botão de solicitação aqui, apenas consulta.
+
+6. FLUXO DE REQUISIÇÃO (FUNCIONÁRIO)
+------------------------------------
+
+6.1. Nova requisição
+--------------------
+
+Menu:
+- Minhas requisições -> Nova requisição
+
+Passo a passo:
+1) No topo, há uma linha de inclusão de itens:
+   - Material (combo)
+   - Unidade (preenchida automaticamente)
+   - Estoque atual (preenchido automaticamente)
+   - Quantidade solicitada
+   - Botão "Adicionar item"
+2) Selecionar o Material desejado.
+3) Conferir Unidade e Estoque atual.
+4) Informar Quantidade solicitada.
+5) Clicar em "Adicionar item".
+   - O item entra em uma tabela abaixo, com opção de remover.
+6) Repetir os passos 2 a 5 para todos os itens necessários.
+7) Ao final, clicar em "Salvar requisição".
+
+Regras:
+- A requisição grava:
+  - prefeitura e secretaria da sessão;
+  - solicitante (usuário logado);
+  - setor do solicitante (congelado na requisição);
+  - itens com quantidade solicitada;
+  - número da requisição gerado automaticamente:
+    IBGE-SECRETARIA-AAAAMMDDHHMMSS-MATRÍCULA.
+
+6.2. Minhas requisições
+-----------------------
+
+Menu:
+- Minhas requisições
+
+Recursos:
+- Lista todas as requisições do usuário logado.
+- Filtros:
+  - número da requisição
+  - nome/e-mail do solicitante
+  - status (Pendente, Aprovada, Aprovada Parcialmente, Negada, Entregue)
+  - data de criação (início/fim)
+- Ações:
+  - Detalhes da requisição.
+
+7. ANÁLISE DA REQUISIÇÃO (ADMINISTRADOR)
+----------------------------------------
+
+Menu:
+- Requisições pendentes
+  - Mostra só as requisições com status PENDENTE.
+
+Passos:
+1) Acessar: Requisições pendentes.
+2) Clicar em "Analisar" na requisição desejada.
+3) Para cada item:
+   - Ver Qtd. solicitada.
+   - Ver Estoque atual.
+   - Marcar ou não o checkbox "Liberar":
+     - Se marcado: Qtd. liberada = Qtd. solicitada (campo fica travado).
+     - Se desmarcado: o administrador pode digitar Qtd. liberada manualmente
+       (0, parcial ou igual à solicitada).
+4) Preencher Observação do administrador (opcional).
+5) Clicar em "Salvar análise".
+
+Regras de status (definidas automaticamente):
+- Se todos os itens tiverem quantidade_liberada = 0:
+  => NEGADA.
+- Se todos os itens tiverem quantidade_liberada = quantidade_solicitada > 0:
+  => APROVADA.
+- Caso misturado (zero, parcial, total):
+  => APROVADA PARCIAL.
+
+Observação:
+- Nesta fase, o estoque ainda NÃO é alterado.
+
+8. CONFIRMAÇÃO DA ENTREGA (ADMINISTRADOR)
+-----------------------------------------
+
+Menu:
+- Minhas requisições (como admin) ou Detalhes da requisição:
+  - Botão "Confirmar entrega" aparece para requisições APROVADAS ou APROVADAS PARCIAIS
+    que ainda não foram entregues.
+
+Passos:
+1) Clicar em "Confirmar entrega".
+2) Conferir os itens e quantidades liberadas.
+3) Confirmar (submit do formulário).
+
+Regras:
+- O sistema verifica o estoque disponível:
+  - Se estoque 0: zera a quantidade liberada daquele item.
+  - Se quantidade liberada > estoque: reduz a liberada para o máximo possível.
+- Dá baixa no estoque com base na quantidade_liberada final.
+- Grava data_entrega.
+- Gera um Recibo vinculado à requisição.
+- Redireciona para a tela do Recibo.
+
+Segunda via:
+- Se tentar confirmar entrega novamente de uma requisição já entregue,
+  o sistema não altera estoque nem datas.
+- Apenas reabre o recibo existente (segunda via).
+
+9. RELATÓRIO DETALHADO DE ENTREGA
+---------------------------------
+
+Tela:
+- "Entrega de Materiais" (relatório da requisição)
+
+Conteúdo:
+- Cabeçalho:
+  - Logo
+  - Título "Entrega de Materiais"
+  - Solicitante, setor, matrícula
+  - Nº da requisição
+  - Prefeitura, secretaria
+  - Data de solicitação
+  - Data de aprovação
+  - Data de entrega
+  - Aprovado por
+  - Entregue por (emitido_por do recibo)
+  - Data de impressão
+  - Status atual
+- Itens:
+  - Código, nome, unidade
+  - Quantidade solicitada
+  - Quantidade liberada
+  - Situação (Atendido / Parcialmente atendido / Não atendido)
+- Consumo real:
+  - Total liberado (somatório das quantidades liberadas)
+- Assinaturas:
+  - Solicitante
+  - Responsável pela entrega
+
+10. RELATÓRIOS DISPONÍVEIS (ADMINISTRADOR)
+------------------------------------------
+
+Menu:
+- Relatórios
+
+Relatórios principais:
+
+10.1. Movimento de materiais (Entradas x Saídas)
+------------------------------------------------
+
+- Filtra por período (data início / data fim).
+- Mostra:
+  - Total de entradas (Entradas + Ajustes positivos).
+  - Total de saídas (Requisições + Ajustes negativos).
+  - Saldo final de todos os materiais.
+  - Variação percentual global.
+- Tabela por material:
+  - Saldo inicial (aproximado para o período).
+  - Entradas.
+  - Saídas.
+  - Saldo final.
+  - Variação %.
+  - Ruptura (marca materiais abaixo do mínimo).
+
+10.2. Requisições por status
+----------------------------
+
+- Filtra por data de criação (início/fim).
+- Mostra:
+  - Quantidade e percentual de requisições:
+    - Pendente
+    - Aprovada
+    - Aprovada Parcialmente
+    - Negada
+    - Entregue (qualquer status com data_entrega preenchida).
+
+10.3. Consumo por categoria
+---------------------------
+
+- Filtro por ano.
+- Baseado em requisições entregues (consumo real).
+- Para cada categoria:
+  - Total consumido no ano.
+  - Percentual do total.
+  - Curva ABC:
+    - A: até 80% do consumo acumulado.
+    - B: de 80% a 95%.
+    - C: acima de 95%.
+  - Consumo mês a mês (Jan–Dez).
+- Observação:
+  - O total consumido reflete somente o que foi liberado (não o solicitado).
+
+10.4. Requisições por período (diário, semanal, mensal, anual)
+--------------------------------------------------------------
+
+- Filtros:
+  - Data início, data fim.
+  - Agrupamento: diário, semanal, mensal, anual.
+- Para cada período:
+  - Quantidade de requisições criadas (data_criacao).
+  - Consumo real (quantidade liberada de requisições entregues).
+- Apresentação:
+  - Série temporal (tabela).
+  - Gráfico (barras para quantidade, linha para consumo).
+- Observação:
+  - Contagem de requisições por data_criacao.
+  - Consumo por data_entrega.
+
+10.5. Consumo por usuário
+-------------------------
+
+- Filtro por ano.
+- Considera consumo real (quantidade liberada) de requisições entregues,
+  agrupado por usuário solicitante.
+- Ranking:
+  - Usuário, matrícula, setor.
+  - Total consumido.
+  - Percentual do total.
+  - Status:
+    - "Acima da média": consumo >= 2 vezes a média anual por usuário.
+    - "Dentro da faixa esperada": demais casos.
+- Tabela mês a mês:
+  - Para cada usuário, consumo de Jan a Dez.
+- Gráfico:
+  - Barras para Top 10 consumidores do ano.
+
+11. RESUMO FINAL PARA O ALMOXARIFADO
+------------------------------------
+
+Para garantir dados confiáveis nos relatórios:
+
+1) Cadastro de material
+   - Definir bem código, nome, categoria, unidade, quantidade mínima.
+
+2) Movimentos de estoque SEMPRE via:
+   - Entrada/Ajuste estoque.
+   - Nunca editar quantidade manualmente no cadastro, exceto em fase de implantação inicial.
+
+3) Requisições
+   - Funcionários e administradores solicitam pela tela de “Nova requisição”.
+   - Administradores analisam e definem quantidades liberadas.
+
+4) Entregas
+   - Sempre confirmar entrega pela tela apropriada.
+   - Não ajustar estoque diretamente para saídas.
+
+Seguindo esse fluxo, todos os relatórios (Entradas x Saídas, consumo por categoria,
+por usuário, por período, etc.) refletem fielmente a realidade do almoxarifado.

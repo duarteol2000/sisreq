@@ -1,0 +1,34 @@
+{% extends "core/base.html" %}
+
+{% block title %}Prefeituras{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Prefeituras</h2>
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Sigla</th>
+        <th>Código IBGE</th>
+        <th>Ativo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prefeitura in prefeituras %}
+      <tr>
+        <td>{{ prefeitura.nome }}</td>
+        <td>{{ prefeitura.sigla }}</td>
+        <td>{{ prefeitura.codigo_ibge }}</td>
+        <td>{{ prefeitura.ativo|yesno:"Sim,Não" }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">Nenhuma prefeitura cadastrada.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+

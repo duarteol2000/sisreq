@@ -1,0 +1,231 @@
+[
+  {
+    "model": "estoque.material",
+    "pk": 1,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0001",
+      "nome": "Lápis preto nº 2",
+      "marca": "Faber-Castell",
+      "categoria": "Escritório",
+      "descricao": "Lápis grafite HB nº 2 sextavado",
+      "unidade": "UN",
+      "quantidade_estoque": 200,
+      "quantidade_minima": 50,
+      "ativo": true,
+      "created_at": "2025-01-01T08:00:00Z",
+      "updated_at": "2025-01-01T08:00:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 2,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0002",
+      "nome": "Caneta esferográfica azul",
+      "marca": "BIC",
+      "categoria": "Escritório",
+      "descricao": "Caneta esferográfica azul ponta média 1.0mm",
+      "unidade": "UN",
+      "quantidade_estoque": 300,
+      "quantidade_minima": 80,
+      "ativo": true,
+      "created_at": "2025-01-01T08:05:00Z",
+      "updated_at": "2025-01-01T08:05:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 3,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0003",
+      "nome": "Caneta esferográfica preta",
+      "marca": "BIC",
+      "categoria": "Escritório",
+      "descricao": "Caneta esferográfica preta ponta média 1.0mm",
+      "unidade": "UN",
+      "quantidade_estoque": 200,
+      "quantidade_minima": 50,
+      "ativo": true,
+      "created_at": "2025-01-01T08:10:00Z",
+      "updated_at": "2025-01-01T08:10:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 4,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0004",
+      "nome": "Borracha escolar branca",
+      "marca": "Mercur",
+      "categoria": "Escritório",
+      "descricao": "Borracha branca macia para lápis",
+      "unidade": "UN",
+      "quantidade_estoque": 100,
+      "quantidade_minima": 30,
+      "ativo": true,
+      "created_at": "2025-01-01T08:15:00Z",
+      "updated_at": "2025-01-01T08:15:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 5,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0005",
+      "nome": "Apontador simples",
+      "marca": "Faber-Castell",
+      "categoria": "Escritório",
+      "descricao": "Apontador simples para lápis nº 2",
+      "unidade": "UN",
+      "quantidade_estoque": 80,
+      "quantidade_minima": 20,
+      "ativo": true,
+      "created_at": "2025-01-01T08:20:00Z",
+      "updated_at": "2025-01-01T08:20:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 6,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0006",
+      "nome": "Papel sulfite A4 75g",
+      "marca": "Chamex",
+      "categoria": "Papelaria",
+      "descricao": "Resma de papel sulfite A4 75g/m² com 500 folhas",
+      "unidade": "CX",
+      "quantidade_estoque": 30,
+      "quantidade_minima": 10,
+      "ativo": true,
+      "created_at": "2025-01-01T08:25:00Z",
+      "updated_at": "2025-01-01T08:25:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 7,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0007",
+      "nome": "Envelope ofício branco",
+      "marca": "COP",
+      "categoria": "Papelaria",
+      "descricao": "Pacote com 100 envelopes ofício brancos",
+      "unidade": "PCT",
+      "quantidade_estoque": 25,
+      "quantidade_minima": 5,
+      "ativo": true,
+      "created_at": "2025-01-01T08:30:00Z",
+      "updated_at": "2025-01-01T08:30:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 8,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0008",
+      "nome": "Grampeador de mesa",
+      "marca": "Tilibra",
+      "categoria": "Escritório",
+      "descricao": "Grampeador de mesa para até 20 folhas",
+      "unidade": "UN",
+      "quantidade_estoque": 15,
+      "quantidade_minima": 5,
+      "ativo": true,
+      "created_at": "2025-01-01T08:35:00Z",
+      "updated_at": "2025-01-01T08:35:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 9,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0009",
+      "nome": "Caixa de grampos 26/6",
+      "marca": "ACC",
+      "categoria": "Escritório",
+      "descricao": "Caixa com 5000 grampos 26/6",
+      "unidade": "CX",
+      "quantidade_estoque": 20,
+      "quantidade_minima": 5,
+      "ativo": true,
+      "created_at": "2025-01-01T08:40:00Z",
+      "updated_at": "2025-01-01T08:40:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 10,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0010",
+      "nome": "Marcador de quadro branco azul",
+      "marca": "Pilot",
+      "categoria": "Escritório",
+      "descricao": "Marcador para quadro branco cor azul",
+      "unidade": "UN",
+      "quantidade_estoque": 60,
+      "quantidade_minima": 15,
+      "ativo": true,
+      "created_at": "2025-01-01T08:45:00Z",
+      "updated_at": "2025-01-01T08:45:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 11,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0011",
+      "nome": "Fita adesiva transparente 48mm x 45m",
+      "marca": "3M",
+      "categoria": "Escritório",
+      "descricao": "Rolo de fita adesiva transparente larga",
+      "unidade": "ROLO",
+      "quantidade_estoque": 25,
+      "quantidade_minima": 5,
+      "ativo": true,
+      "created_at": "2025-01-01T08:50:00Z",
+      "updated_at": "2025-01-01T08:50:00Z"
+    }
+  },
+  {
+    "model": "estoque.material",
+    "pk": 12,
+    "fields": {
+      "prefeitura": 1,
+      "secretaria": 1,
+      "codigo": "MAT-0012",
+      "nome": "Clips para papel nº 2/0",
+      "marca": "DAC",
+      "categoria": "Escritório",
+      "descricao": "Caixa com 100 clips galvanizados nº 2/0",
+      "unidade": "CX",
+      "quantidade_estoque": 40,
+      "quantidade_minima": 10,
+      "ativo": true,
+      "created_at": "2025-01-01T08:55:00Z",
+      "updated_at": "2025-01-01T08:55:00Z"
+    }
+  }
+]
+

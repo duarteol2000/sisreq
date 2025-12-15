@@ -1,0 +1,83 @@
+{% extends "core/base.html" %}
+
+{% block title %}Relatório de Requisições por Status{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <style>
+  @media print {
+    .no-print,
+    nav { display: none !important; }
+  }
+  </style>
+  <div class="text-center mb-3">
+    {% if request.user.secretaria.logo %}
+      <img src="{{ request.user.secretaria.logo.url }}" alt="{{ request.user.secretaria }}" style="max-height:80px;">
+    {% elif request.user.prefeitura.logo %}
+      <img src="{{ request.user.prefeitura.logo.url }}" alt="{{ request.user.prefeitura }}" style="max-height:80px;">
+    {% endif %}
+  </div>
+  <h2 class="text-center mb-2">Relatório de Requisições por Status</h2>
+  <div class="d-flex justify-content-end align-items-center mb-2 no-print">
+    <button type="button" class="btn btn-sm btn-primary" onclick="window.print();">
+      Imprimir
+    </button>
+  </div>
+  <form method="get" class="row g-2 mt-3 mb-3 no-print">
+    <div class="col-md-3">
+      <label class="form-label">Data início</label>
+      <input type="date"
+             name="data_inicio"
+             value="{{ data_inicio|date:'Y-m-d' }}"
+             class="form-control form-control-sm">
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Data fim</label>
+      <input type="date"
+             name="data_fim"
+             value="{{ data_fim|date:'Y-m-d' }}"
+             class="form-control form-control-sm">
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-sm btn-primary w-100">Filtrar</button>
+    </div>
+  </form>
+
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <div class="card border-secondary">
+        <div class="card-body">
+          <h6 class="card-title">Total de requisições no período</h6>
+          <p class="card-text fw-bold">{{ total }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4>Distribuição por status</h4>
+  <table class="table table-sm table-striped mt-2">
+    <thead>
+      <tr>
+        <th>Status</th>
+        <th class="text-end">Quantidade</th>
+        <th class="text-end">Percentual</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for linha in resumo_status %}
+      <tr>
+        <td>{{ linha.label }}</td>
+        <td class="text-end">{{ linha.quantidade }}</td>
+        <td class="text-end">
+          {% if total %}
+            {{ linha.percentual|floatformat:1 }}%
+          {% else %}
+            0,0%
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

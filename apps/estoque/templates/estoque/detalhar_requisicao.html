@@ -1,0 +1,63 @@
+{% extends "core/base.html" %}
+
+{% block title %}Detalhe da Requisição{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Requisição {{ requisicao.numero_requisicao }}</h2>
+  <p><strong>Solicitante:</strong> {{ requisicao.solicitante.nome_completo }}</p>
+  <p><strong>Setor do solicitante na época:</strong> {{ requisicao.setor|default:"-" }}</p>
+  <p><strong>Status:</strong> {{ requisicao.get_status_display }}</p>
+  <p><strong>Observação do administrador:</strong> {{ requisicao.observacao_administrador|default:"-" }}</p>
+
+  <div class="mb-3">
+    <a href="{% url 'estoque:listar_requisicoes' %}" class="btn btn-secondary btn-sm">
+      Voltar
+    </a>
+    {% if request.user.tipo == "ADMINISTRADOR" %}
+      {% if requisicao.status == "APROVADA" or requisicao.status == "APROVADA_PARCIAL" %}
+        {% if not requisicao.data_entrega %}
+          <a href="{% url 'estoque:confirmar_entrega' requisicao.pk %}"
+             class="btn btn-success btn-sm">
+            Confirmar entrega
+          </a>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </div>
+
+  {% if requisicao.data_entrega %}
+  <div class="mb-3">
+    <a href="{% url 'estoque:relatorio_entrega_material' requisicao.pk %}"
+       target="_blank"
+       class="btn btn-primary btn-sm">
+      Imprimir Entrega de Materiais
+    </a>
+  </div>
+  {% endif %}
+
+  <h4 class="mt-4">Itens</h4>
+  <table class="table table-striped mt-2">
+    <thead>
+      <tr>
+        <th>Material</th>
+        <th class="text-right">Qtd. solicitada</th>
+        <th class="text-right">Qtd. liberada</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in itens %}
+      <tr>
+        <td>{{ item.material }}</td>
+        <td class="text-right">{{ item.quantidade_solicitada }}</td>
+        <td class="text-right">{{ item.quantidade_liberada }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="3">Nenhum item na requisição.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

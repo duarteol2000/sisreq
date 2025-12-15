@@ -1,0 +1,87 @@
+{% extends "core/base.html" %}
+
+{% block title %}Analisar Requisição{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Analisar Requisição {{ requisicao.numero_requisicao }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <div class="row mb-3">
+      <div class="col-md-4">
+        <label class="form-label d-block">Status da requisição</label>
+        <p class="form-control-plaintext fw-bold">
+          {{ requisicao.get_status_display }}
+        </p>
+      </div>
+      <div class="col-md-8">
+        <label class="form-label d-block text-center">Observação do administrador</label>
+        {{ form.observacao_administrador }}
+      </div>
+    </div>
+
+    <h4>Itens</h4>
+    {{ formset.management_form }}
+    <table class="table table-striped table-sm mt-2" id="tabela-itens-analise">
+      <thead>
+        <tr>
+          <th>Material</th>
+          <th class="text-right">Qtd. solicitada</th>
+          <th class="text-right">Estoque atual</th>
+          <th class="text-center">Liberar</th>
+          <th class="text-right">Qtd. liberada</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item_form in formset %}
+        <tr>
+          <td class="align-middle">{{ item_form.instance.material }}</td>
+          <td class="text-right align-middle">{{ item_form.instance.quantidade_solicitada }}</td>
+          <td class="text-right align-middle">{{ item_form.instance.material.quantidade_estoque }}</td>
+          <td class="align-middle text-center">
+            <div class="form-check d-inline-flex justify-content-center">
+              {{ item_form.liberar_item }}
+            </div>
+          </td>
+          <td class="text-right align-middle">
+            {{ item_form.quantidade_liberada }}
+            {{ item_form.id }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">Salvar análise</button>
+    <a href="{% url 'estoque:detalhar_requisicao' requisicao.pk %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const tabela = document.getElementById('tabela-itens-analise');
+  if (!tabela) return;
+
+  tabela.querySelectorAll('tr').forEach(function(row){
+    const inputQtd = row.querySelector('.js-qtd-liberada');
+    const chk = row.querySelector('.js-liberar-item');
+    if (!inputQtd || !chk) return;
+
+    const qtdSolicitada = parseInt(inputQtd.getAttribute('data-qtd-solicitada') || '0', 10);
+
+    function syncEstado(){
+      if (chk.checked){
+        if (qtdSolicitada > 0){
+          inputQtd.value = qtdSolicitada;
+        }
+        inputQtd.readOnly = true;
+      } else {
+        inputQtd.readOnly = false;
+      }
+    }
+
+    chk.addEventListener('change', syncEstado);
+    syncEstado();
+  });
+});
+</script>
+{% endblock %}

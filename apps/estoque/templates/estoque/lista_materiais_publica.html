@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+
+{% block title %}Materiais em Estoque{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Materiais em Estoque</h2>
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+        <th>Unidade</th>
+        <th class="text-right">Quantidade em estoque</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for material in materiais %}
+      <tr>
+        <td>{{ material.codigo }}</td>
+        <td>{{ material.nome }}</td>
+        <td>{{ material.descricao }}</td>
+        <td>{{ material.get_unidade_display }}</td>
+        <td class="text-right">{{ material.quantidade_estoque }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">Nenhum material disponível para esta secretaria.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

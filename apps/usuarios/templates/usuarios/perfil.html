@@ -1,0 +1,15 @@
+{% extends "core/base.html" %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h2>Meu Perfil</h2>
+  <p><strong>Nome:</strong> {{ request.user.nome_completo }}</p>
+  <p><strong>E-mail:</strong> {{ request.user.email }}</p>
+  <p><strong>Prefeitura:</strong> {{ request.user.prefeitura }}</p>
+  <p><strong>Secretaria:</strong> {{ request.user.secretaria }}</p>
+  <p><strong>Setor:</strong> {{ request.user.setor|default:"-" }}</p>
+  <p><strong>Tipo:</strong> {{ request.user.get_tipo_display }}</p>
+</div>
+{% endblock %}

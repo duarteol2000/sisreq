@@ -1,0 +1,69 @@
+{% extends "core/base.html" %}
+
+{% block title %}Materiais (Admin){% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h2>Materiais da Secretaria</h2>
+    <a href="{% url 'estoque:cadastrar_material' %}" class="btn btn-primary">Novo material</a>
+  </div>
+  <form method="get" class="row g-2 mt-3">
+    <div class="col-md-4">
+      <input type="text"
+             name="buscar"
+             value="{{ filtro_buscar }}"
+             class="form-control form-control-sm"
+             placeholder="Buscar por código, nome ou marca">
+    </div>
+    <div class="col-md-3">
+      <select name="categoria" class="form-select form-select-sm">
+        <option value="">Todas as categorias</option>
+        {% for value, label in categorias %}
+          <option value="{{ value }}" {% if filtro_categoria == value %}selected{% endif %}>
+            {{ label }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-3">
+      <select name="ativo" class="form-select form-select-sm">
+        <option value="">Ativos e inativos</option>
+        <option value="1" {% if filtro_ativo == "1" %}selected{% endif %}>Somente ativos</option>
+        <option value="0" {% if filtro_ativo == "0" %}selected{% endif %}>Somente inativos</option>
+      </select>
+    </div>
+    <div class="col-md-2 d-grid">
+      <button type="submit" class="btn btn-sm btn-primary">Filtrar</button>
+    </div>
+  </form>
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nome</th>
+        <th>Unidade</th>
+        <th class="text-right">Qtd. estoque</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for material in materiais %}
+      <tr>
+        <td>{{ material.codigo }}</td>
+        <td>{{ material.nome }}</td>
+        <td>{{ material.get_unidade_display }}</td>
+        <td class="text-right">{{ material.quantidade_estoque }}</td>
+        <td>
+          <a href="{% url 'estoque:editar_material' material.pk %}" class="btn btn-sm btn-secondary">Editar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5">Nenhum material cadastrado.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

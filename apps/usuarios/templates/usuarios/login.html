@@ -1,0 +1,48 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="login-page"
+     style="background-image: url('{% static 'img/SISREQ – Sistema de Requisicoes.png' %}');">
+  <div class="login-card">
+    <h2 class="mb-3 text-center">SISREQ</h2>
+    <p class="text-muted mb-4 text-center">Sistema de Requisição de Materiais</p>
+    <form method="post"
+          id="login-form"
+          data-secretarias-url="{% url 'usuarios:secretarias_por_ibge' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">{{ form.codigo_ibge.label }}</label>
+        {{ form.codigo_ibge }}
+        {% if form.codigo_ibge.errors %}
+          <div class="text-danger small">{{ form.codigo_ibge.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{{ form.secretaria.label }}</label>
+        {{ form.secretaria }}
+        {% if form.secretaria.errors %}
+          <div class="text-danger small">{{ form.secretaria.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{{ form.email.label }}</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <div class="text-danger small">{{ form.email.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="mb-3">
+        <label class="form-label">{{ form.password.label }}</label>
+        {{ form.password }}
+        {% if form.password.errors %}
+          <div class="text-danger small">{{ form.password.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Entrar</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

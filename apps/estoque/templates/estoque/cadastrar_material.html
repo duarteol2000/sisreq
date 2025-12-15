@@ -1,0 +1,94 @@
+{% extends "core/base.html" %}
+
+{% block title %}Cadastrar Material{% endblock %}
+
+{% block content %}
+<div class="container mt-2">
+  <div class="card card-compact">
+    <div class="card-body">
+      <h2 class="card-title mb-3">Cadastrar Material</h2>
+      <p class="text-muted mb-3">Informe os dados do produto/ material para controle de estoque.</p>
+      <form method="post" class="mt-2">
+        {% csrf_token %}
+
+        <div class="form-grid-2">
+          <div class="mb-3">
+            <label class="form-label">{{ form.codigo.label }}</label>
+            {{ form.codigo }}
+            {% if form.codigo.errors %}
+              <div class="text-danger small">{{ form.codigo.errors|striptags }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.nome.label }}</label>
+            {{ form.nome }}
+            {% if form.nome.errors %}
+              <div class="text-danger small">{{ form.nome.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{{ form.marca.label }}</label>
+            {{ form.marca }}
+            {% if form.marca.errors %}
+              <div class="text-danger small">{{ form.marca.errors|striptags }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.categoria.label }}</label>
+            {{ form.categoria }}
+            {% if form.categoria.errors %}
+              <div class="text-danger small">{{ form.categoria.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{{ form.unidade.label }}</label>
+            {{ form.unidade }}
+            {% if form.unidade.errors %}
+              <div class="text-danger small">{{ form.unidade.errors|striptags }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">{{ form.quantidade_estoque.label }}</label>
+            {{ form.quantidade_estoque }}
+            {% if form.quantidade_estoque.errors %}
+              <div class="text-danger small">{{ form.quantidade_estoque.errors|striptags }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">{{ form.quantidade_minima.label }}</label>
+            {{ form.quantidade_minima }}
+            {% if form.quantidade_minima.errors %}
+              <div class="text-danger small">{{ form.quantidade_minima.errors|striptags }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-3 d-flex align-items-center">
+            <div class="form-check">
+              {{ form.ativo }}
+              <label class="form-check-label ms-1">{{ form.ativo.label }}</label>
+            </div>
+            {% if form.ativo.errors %}
+              <div class="text-danger small ms-2">{{ form.ativo.errors|striptags }}</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">{{ form.descricao.label }}</label>
+          {{ form.descricao }}
+          {% if form.descricao.errors %}
+            <div class="text-danger small">{{ form.descricao.errors|striptags }}</div>
+          {% endif %}
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a href="{% url 'estoque:listar_materiais' %}" class="btn btn-outline-secondary">Cancelar</a>
+          <button type="submit" class="btn btn-primary">Salvar material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

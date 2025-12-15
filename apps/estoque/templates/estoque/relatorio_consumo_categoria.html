@@ -1,0 +1,137 @@
+{% extends "core/base.html" %}
+
+{% block title %}Consumo por Categoria{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+  <style>
+  @media print {
+    @page {
+      size: landscape;
+    }
+    .no-print,
+    nav { display: none !important; }
+  }
+  </style>
+  <div class="text-center mb-3">
+    {% if request.user.secretaria.logo %}
+      <img src="{{ request.user.secretaria.logo.url }}" alt="{{ request.user.secretaria }}" style="max-height:80px;">
+    {% elif request.user.prefeitura.logo %}
+      <img src="{{ request.user.prefeitura.logo.url }}" alt="{{ request.user.prefeitura }}" style="max-height:80px;">
+    {% endif %}
+  </div>
+  <h2 class="text-center mb-2">Relatório de Consumo por Categoria</h2>
+  <div class="d-flex justify-content-end align-items-center mb-2 no-print">
+    <form method="get" class="d-flex align-items-center me-2">
+      <label for="filtro-ano" class="me-2 mb-0">Ano:</label>
+      <select id="filtro-ano"
+              name="ano"
+              class="form-select form-select-sm"
+              onchange="this.form.submit()">
+        {% for ano in anos_disponiveis %}
+          <option value="{{ ano }}" {% if ano_selecionado == ano %}selected{% endif %}>
+            {{ ano }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+    <button type="button" class="btn btn-sm btn-primary" onclick="window.print();">
+      Imprimir
+    </button>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-4">
+      <div class="card border-primary">
+        <div class="card-body">
+          <h6 class="card-title">Total consumido no ano</h6>
+          <p class="card-text fw-bold">{{ total_geral }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4>Consumo por categoria (Curva ABC)</h4>
+  <div class="table-responsive">
+    <table class="table table-sm table-striped table-bordered mt-2">
+      <colgroup>
+        <col style="width:18%;">  {# Categoria #}
+        <col style="width:10%;">  {# Total consumido #}
+        <col style="width:8%;">   {# % do total #}
+        <col style="width:6%;">   {# Classe #}
+        <col style="width:4%;">   {# Jan #}
+        <col style="width:4%;">   {# Fev #}
+        <col style="width:4%;">   {# Mar #}
+        <col style="width:4%;">   {# Abr #}
+        <col style="width:4%;">   {# Mai #}
+        <col style="width:4%;">   {# Jun #}
+        <col style="width:4%;">   {# Jul #}
+        <col style="width:4%;">   {# Ago #}
+        <col style="width:4%;">   {# Set #}
+        <col style="width:4%;">   {# Out #}
+        <col style="width:4%;">   {# Nov #}
+        <col style="width:4%;">   {# Dez #}
+      </colgroup>
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th class="text-end">Total consumido</th>
+          <th class="text-end">% do total</th>
+          <th class="text-center">Classe ABC</th>
+          <th class="text-end">Jan</th>
+          <th class="text-end">Fev</th>
+          <th class="text-end">Mar</th>
+          <th class="text-end">Abr</th>
+          <th class="text-end">Mai</th>
+          <th class="text-end">Jun</th>
+          <th class="text-end">Jul</th>
+          <th class="text-end">Ago</th>
+          <th class="text-end">Set</th>
+          <th class="text-end">Out</th>
+          <th class="text-end">Nov</th>
+          <th class="text-end">Dez</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for linha in linhas %}
+        <tr>
+          <td>{{ linha.label }}</td>
+          <td class="text-end">{{ linha.total }}</td>
+          <td class="text-end">
+            {% if total_geral %}
+              {{ linha.percentual|floatformat:1 }}%
+            {% else %}
+              0,0%
+            {% endif %}
+          </td>
+          <td class="text-center">
+            <span class="badge text-bg-secondary">{{ linha.classe_abc }}</span>
+          </td>
+          {% for mes_val in linha.mensal %}
+          <td class="text-end">{{ mes_val }}</td>
+          {% endfor %}
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="16">Nenhum consumo registrado para o ano selecionado.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-3">
+    <p class="text-muted small mb-1">
+      <strong>Observação:</strong>
+      o <strong>Total consumido</strong> representa apenas o que foi efetivamente liberado/consumido
+      das categorias no período, e não o total solicitado nas requisições.
+    </p>
+    <p class="text-muted small mb-0">
+      <strong>Legenda Classe ABC:</strong>
+      A = até 80% do consumo acumulado;
+      B = de 80% até 95%;
+      C = acima de 95%.
+    </p>
+  </div>
+</div>
+{% endblock %}
