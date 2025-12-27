@@ -39,6 +39,8 @@
       <img src="{{ recibo.secretaria.logo.url }}" alt="{{ recibo.secretaria }}" class="logo-recibo">
     {% elif recibo.prefeitura.logo %}
       <img src="{{ recibo.prefeitura.logo.url }}" alt="{{ recibo.prefeitura }}" class="logo-recibo">
+    {% else %}
+      <img src="{% static 'img/logo-placeholder.png' %}" alt="SISREQ" class="logo-recibo">
     {% endif %}
   </div>
   <p><strong>Prefeitura:</strong> {{ recibo.prefeitura }}</p>
