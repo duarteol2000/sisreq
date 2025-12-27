@@ -1,13 +1,26 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %}Recibo{% endblock %}
 
 {% block content %}
 <style>
-@media print {
-  .no-print,
-  nav { display: none !important; }
-}
+  @media print {
+    .no-print,
+    nav { display: none !important; }
+  }
+  .logo-recibo {
+    max-height: 80px;
+    max-width: 220px;
+  }
+  .signature-block {
+    margin-top: 32px;
+  }
+  .signature-line {
+    border-bottom: 1px solid #000;
+    height: 40px;
+    margin-bottom: 6px;
+  }
 </style>
 <div class="container mt-4">
   <div class="d-flex justify-content-between align-items-center mb-3 no-print">
@@ -23,9 +36,9 @@
   </div>
   <div class="text-center mb-3">
     {% if recibo.secretaria.logo %}
-      <img src="{{ recibo.secretaria.logo.url }}" alt="{{ recibo.secretaria }}" style="max-height:80px;">
+      <img src="{{ recibo.secretaria.logo.url }}" alt="{{ recibo.secretaria }}" class="logo-recibo">
     {% elif recibo.prefeitura.logo %}
-      <img src="{{ recibo.prefeitura.logo.url }}" alt="{{ recibo.prefeitura }}" style="max-height:80px;">
+      <img src="{{ recibo.prefeitura.logo.url }}" alt="{{ recibo.prefeitura }}" class="logo-recibo">
     {% endif %}
   </div>
   <p><strong>Prefeitura:</strong> {{ recibo.prefeitura }}</p>
@@ -65,5 +78,18 @@
       {% endfor %}
     </tbody>
   </table>
+
+  <div class="row signature-block">
+    <div class="col-md-6 text-center">
+      <div class="signature-line"></div>
+      <div class="small text-secondary">Responsável pela entrega (Administrador)</div>
+      <div class="small">{{ recibo.emitido_por.nome_completo }}</div>
+    </div>
+    <div class="col-md-6 text-center">
+      <div class="signature-line"></div>
+      <div class="small text-secondary">Recebido por (Solicitante)</div>
+      <div class="small">{{ recibo.requisicao.solicitante.nome_completo }}</div>
+    </div>
+  </div>
 </div>
 {% endblock %}
