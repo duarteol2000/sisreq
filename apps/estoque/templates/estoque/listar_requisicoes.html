@@ -30,7 +30,7 @@
 
   <div class="card mb-3">
     <div class="card-body">
-      <form method="get" class="row g-2">
+      <form method="get" id="filtro-requisicoes" class="row g-2">
         <div class="col-md-4">
           <input type="text"
                  name="buscar"
@@ -72,10 +72,11 @@
   <div class="card">
     <div class="card-body"
          {% if request.user.tipo == "ADMINISTRADOR" %}
-         hx-get="?partial=table"
+         hx-get="{% url 'estoque:listar_requisicoes' %}?partial=table"
          hx-trigger="load, every 20s"
          hx-target="#requisicoes-list"
          hx-swap="outerHTML"
+         hx-include="#filtro-requisicoes"
          {% endif %}>
       {% include "estoque/partials/_tabela_requisicoes.html" %}
     </div>
