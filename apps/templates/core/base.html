@@ -6,6 +6,7 @@
     <title>{% block title %}SISREQ{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'estoque/css/estoque.css' %}">
+    {% block extra_css %}{% endblock %}
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -37,7 +38,7 @@
               <a class="nav-link" href="{% url 'estoque:novo_movimento_estoque' %}">Entrada/Ajuste estoque</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{% url 'estoque:entrada_compra' %}">Movimentações/Empréstimos</a>
+              <a class="nav-link" href="{% url 'estoque:entrada_compra' %}">Entrada por Suprimento</a>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle"

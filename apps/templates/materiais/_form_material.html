@@ -1,0 +1,87 @@
+{% load static %}
+{% if form.non_field_errors %}
+  <div class="alert alert-danger">
+    {{ form.non_field_errors }}
+  </div>
+{% endif %}
+
+<div class="row g-3">
+  <div class="col-12">
+    <div class="section-title">Dados do Material</div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label" for="{{ form.codigo.id_for_label }}">Código</label>
+        {{ form.codigo }}
+        {% if form.codigo.errors %}
+          <div class="text-danger small">{{ form.codigo.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-8">
+        <label class="form-label" for="{{ form.nome.id_for_label }}">Nome</label>
+        {{ form.nome }}
+        {% if form.nome.errors %}
+          <div class="text-danger small">{{ form.nome.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" for="{{ form.marca.id_for_label }}">Marca</label>
+        {{ form.marca }}
+        {% if form.marca.errors %}
+          <div class="text-danger small">{{ form.marca.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="{{ form.categoria.id_for_label }}">Categoria</label>
+        {{ form.categoria }}
+        {% if form.categoria.errors %}
+          <div class="text-danger small">{{ form.categoria.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-2">
+        <label class="form-label" for="{{ form.unidade.id_for_label }}">Unidade</label>
+        {{ form.unidade }}
+        {% if form.unidade.errors %}
+          <div class="text-danger small">{{ form.unidade.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="section-title">Controle de Estoque</div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label" for="{{ form.quantidade_estoque.id_for_label }}">Quantidade em estoque</label>
+        {{ form.quantidade_estoque }}
+        {% if form.quantidade_estoque.errors %}
+          <div class="text-danger small">{{ form.quantidade_estoque.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-4">
+        <label class="form-label" for="{{ form.quantidade_minima.id_for_label }}">Quantidade mínima</label>
+        {{ form.quantidade_minima }}
+        {% if form.quantidade_minima.errors %}
+          <div class="text-danger small">{{ form.quantidade_minima.errors|striptags }}</div>
+        {% endif %}
+      </div>
+      <div class="col-md-4 d-flex align-items-end">
+        <div class="form-check form-switch">
+          {{ form.ativo }}
+          <label class="form-check-label" for="{{ form.ativo.id_for_label }}">Ativo</label>
+        </div>
+        {% if form.ativo.errors %}
+          <div class="text-danger small">{{ form.ativo.errors|striptags }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="section-title">Informações Complementares</div>
+    <label class="form-label" for="{{ form.descricao.id_for_label }}">Descrição</label>
+    {{ form.descricao }}
+    {% if form.descricao.errors %}
+      <div class="text-danger small">{{ form.descricao.errors|striptags }}</div>
+    {% endif %}
+  </div>
+</div>

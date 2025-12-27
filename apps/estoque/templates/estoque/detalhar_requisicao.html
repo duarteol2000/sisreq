@@ -1,63 +1,91 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %}Detalhe da Requisição{% endblock %}
 
-{% block content %}
-<div class="container mt-4">
-  <h2>Requisição {{ requisicao.numero_requisicao }}</h2>
-  <p><strong>Solicitante:</strong> {{ requisicao.solicitante.nome_completo }}</p>
-  <p><strong>Setor do solicitante na época:</strong> {{ requisicao.setor|default:"-" }}</p>
-  <p><strong>Status:</strong> {{ requisicao.get_status_display }}</p>
-  <p><strong>Observação do administrador:</strong> {{ requisicao.observacao_administrador|default:"-" }}</p>
+{% block extra_css %}
+  <style>
+    body {
+      background: #e8ecf5;
+      color: #0f172a;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+  </style>
+{% endblock %}
 
-  <div class="mb-3">
-    <a href="{% url 'estoque:listar_requisicoes' %}" class="btn btn-secondary btn-sm">
-      Voltar
+{% block content %}
+<div class="mx-auto mt-4" style="max-width: 900px;">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Requisição {{ requisicao.numero_requisicao }}</h1>
+    <a href="{% url 'estoque:listar_requisicoes' %}" class="btn btn-outline-secondary btn-sm">
+      Voltar para minhas requisições
     </a>
-    {% if request.user.tipo == "ADMINISTRADOR" %}
-      {% if requisicao.status == "APROVADA" or requisicao.status == "APROVADA_PARCIAL" %}
-        {% if not requisicao.data_entrega %}
-          <a href="{% url 'estoque:confirmar_entrega' requisicao.pk %}"
-             class="btn btn-success btn-sm">
-            Confirmar entrega
-          </a>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <p><strong>Solicitante:</strong> {{ requisicao.solicitante.nome_completo }}</p>
+      <p><strong>Setor do solicitante na época:</strong> {{ requisicao.setor|default:"-" }}</p>
+      <p><strong>Status:</strong> {{ requisicao.get_status_display }}</p>
+      <p><strong>Observação do administrador:</strong> {{ requisicao.observacao_administrador|default:"-" }}</p>
+
+      <div class="mt-3">
+        {% if request.user.tipo == "ADMINISTRADOR" %}
+          {% if requisicao.status == "APROVADA" or requisicao.status == "APROVADA_PARCIAL" %}
+            {% if not requisicao.data_entrega %}
+              <a href="{% url 'estoque:confirmar_entrega' requisicao.pk %}"
+                 class="btn btn-success btn-sm">
+                Confirmar entrega
+              </a>
+            {% endif %}
+          {% endif %}
         {% endif %}
-      {% endif %}
-    {% endif %}
+      </div>
+    </div>
   </div>
 
   {% if requisicao.data_entrega %}
-  <div class="mb-3">
-    <a href="{% url 'estoque:relatorio_entrega_material' requisicao.pk %}"
-       target="_blank"
-       class="btn btn-primary btn-sm">
-      Imprimir Entrega de Materiais
-    </a>
+  <div class="card mb-3">
+    <div class="card-body">
+      <a href="{% url 'estoque:relatorio_entrega_material' requisicao.pk %}"
+         target="_blank"
+         class="btn btn-primary btn-sm">
+        Imprimir Entrega de Materiais
+      </a>
+    </div>
   </div>
   {% endif %}
 
-  <h4 class="mt-4">Itens</h4>
-  <table class="table table-striped mt-2">
-    <thead>
-      <tr>
-        <th>Material</th>
-        <th class="text-right">Qtd. solicitada</th>
-        <th class="text-right">Qtd. liberada</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in itens %}
-      <tr>
-        <td>{{ item.material }}</td>
-        <td class="text-right">{{ item.quantidade_solicitada }}</td>
-        <td class="text-right">{{ item.quantidade_liberada }}</td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="3">Nenhum item na requisição.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="card">
+    <div class="card-body">
+      <h4 class="h5 mb-3">Itens</h4>
+      <table class="table table-hover align-middle">
+        <thead>
+          <tr>
+            <th>Material</th>
+            <th class="text-right">Qtd. solicitada</th>
+            <th class="text-right">Qtd. liberada</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in itens %}
+          <tr>
+            <td>{{ item.material }}</td>
+            <td class="text-right">{{ item.quantidade_solicitada }}</td>
+            <td class="text-right">{{ item.quantidade_liberada }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="3" class="text-center text-secondary">Nenhum item na requisição.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 {% endblock %}

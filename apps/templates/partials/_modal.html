@@ -1,0 +1,20 @@
+{% block modal %}
+<div class="modal fade" id="{{ modal_id|default:'appModal' }}" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog {{ modal_size|default:'modal-lg' }} modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ modal_title|default:'Detalhes' }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        {% block modal_body %}{% endblock %}
+      </div>
+      {% if modal_show_footer|default:True %}
+        <div class="modal-footer">
+          {% block modal_footer %}{% endblock %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

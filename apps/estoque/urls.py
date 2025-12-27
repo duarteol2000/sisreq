@@ -18,6 +18,11 @@ urlpatterns = [
         views.editar_material,
         name="editar_material",
     ),
+    path(
+        "materiais/<int:pk>/",
+        views.detalhe_material,
+        name="detalhe_material",
+    ),
     path("requisicoes/", views.listar_requisicoes, name="listar_requisicoes"),
     path("requisicoes/nova/", views.nova_requisicao, name="nova_requisicao"),
     path(

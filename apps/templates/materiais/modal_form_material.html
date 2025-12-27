@@ -1,0 +1,13 @@
+{% extends "partials/_modal.html" %}
+
+{% block modal_body %}
+  <form method="post" hx-post="{{ action_url }}" hx-target="#modalContainer" hx-swap="innerHTML" novalidate>
+    {% csrf_token %}
+    {% include "materiais/_form_material.html" %}
+    <div class="mt-4">
+      {% include "partials/_form_footer.html" %}
+    </div>
+  </form>
+{% endblock %}
+
+{% block modal_footer %}{% endblock %}

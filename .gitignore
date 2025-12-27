@@ -1,0 +1,22 @@
+# Python/Django
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.db
+*.log
+
+# Virtualenv
+.venv/
+env/
+venv/
+
+# Django static/media (gerados)
+staticfiles/
+media/
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*.DS_Store

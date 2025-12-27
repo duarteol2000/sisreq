@@ -3,8 +3,39 @@
 
 {% block title %}Dashboard{% endblock %}
 
+{% block extra_css %}
+{{ block.super }}
+<style>
+  body {
+    background: #f4f6fc;
+    color: #0f172a;
+  }
+  .dashboard-soft .card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    color: #0f172a;
+  }
+  .dashboard-soft .table {
+    background: #ffffff;
+    color: #0f172a;
+  }
+  .dashboard-soft .table thead th {
+    background: #f5f7fa;
+  }
+  .dashboard-soft .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #fafcff;
+  }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
+<style>
+  body {
+    background: #e8ecf5;
+    color: #0f172a;
+  }
+</style>
+<div class="container mt-4 dashboard-soft">
   <div class="d-flex justify-content-between align-items-center">
     <h2 class="mb-0">Dashboard da Secretaria</h2>
     <form method="get" class="d-flex align-items-center">

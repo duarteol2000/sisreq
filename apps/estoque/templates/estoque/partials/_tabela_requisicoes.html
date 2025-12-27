@@ -1,0 +1,40 @@
+<div id="requisicoes-list">
+  <table class="table table-hover align-middle">
+    <thead>
+      <tr>
+        <th>Nº Requisição</th>
+        <th>Solicitante</th>
+        <th>Status</th>
+        <th>Data criação</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for requisicao in requisicoes %}
+      <tr>
+        <td>{{ requisicao.numero_requisicao }}</td>
+        <td>{{ requisicao.solicitante.nome_completo }}</td>
+        <td>{{ requisicao.get_status_display }}</td>
+        <td>{{ requisicao.data_criacao|date:"d/m/Y H:i" }}</td>
+        <td>
+          <a href="{% url 'estoque:detalhar_requisicao' requisicao.pk %}" class="btn btn-sm btn-secondary">Detalhes</a>
+          {% if request.user.tipo == "ADMINISTRADOR" and requisicao.status == "PENDENTE" %}
+            <a href="{% url 'estoque:analisar_requisicao' requisicao.pk %}" class="btn btn-sm btn-warning">Analisar</a>
+          {% endif %}
+          {% if request.user.tipo == "ADMINISTRADOR" %}
+            {% if requisicao.status == "APROVADA" or requisicao.status == "APROVADA_PARCIAL" %}
+              {% if not requisicao.data_entrega %}
+                <a href="{% url 'estoque:confirmar_entrega' requisicao.pk %}" class="btn btn-sm btn-success">Confirmar entrega</a>
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="text-center text-secondary">Nenhuma requisição encontrada.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

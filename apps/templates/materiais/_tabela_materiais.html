@@ -1,0 +1,44 @@
+<div id="materiais-grid" data-refresh-url="{% url 'estoque:listar_materiais' %}?partial=table">
+  <table class="table table-hover align-middle js-datatable w-100">
+    <thead class="table-dark">
+      <tr>
+        <th class="col-codigo">Código</th>
+        <th>Nome</th>
+        <th>Marca</th>
+        <th>Categoria</th>
+        <th>Unidade</th>
+        <th class="text-end">Qtd. Estoque</th>
+        <th class="text-end">Qtd. Mínima</th>
+        <th>Status</th>
+        <th class="text-center">Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for material in materiais %}
+        <tr>
+          <td class="fw-semibold text-light col-codigo">{{ material.codigo }}</td>
+          <td>{{ material.nome }}</td>
+          <td>{{ material.marca|default:"-" }}</td>
+          <td>{{ material.categoria|default:"-" }}</td>
+          <td>{{ material.get_unidade_display }}</td>
+          <td class="text-end">{{ material.quantidade_estoque }}</td>
+          <td class="text-end">{{ material.quantidade_minima }}</td>
+          <td>
+            {% if material.ativo %}
+              <span class="badge bg-success badge-status">Ativo</span>
+            {% else %}
+              <span class="badge bg-secondary badge-status">Inativo</span>
+            {% endif %}
+          </td>
+          <td class="text-center">
+            {% include "partials/_table_actions.html" with view_url=material.get_absolute_url edit_url=material.get_edit_url %}
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="9" class="text-center text-muted">Nenhum material cadastrado.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

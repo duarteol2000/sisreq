@@ -13,7 +13,7 @@ from django.db.models.functions import (
     TruncYear,
 )
 from django.forms import formset_factory, modelformset_factory
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.utils.dateparse import parse_date
@@ -72,6 +72,10 @@ def _gerar_numero_requisicao(prefeitura, secretaria, solicitante):
 
 def _require_admin(user):
     return user.is_authenticated and user.tipo == "ADMINISTRADOR"
+
+
+def _is_htmx(request) -> bool:
+    return request.headers.get("HX-Request") == "true" or "HX-Request" in request.headers
 
 
 @login_required
@@ -172,39 +176,25 @@ def listar_materiais(request):
     materiais = Material.objects.filter(
         prefeitura_id=prefeitura_id,
         secretaria_id=secretaria_id,
-    )
+    ).order_by("nome")
 
-    # Filtros
-    buscar = (request.GET.get("buscar") or "").strip()
-    categoria = (request.GET.get("categoria") or "").strip()
-    ativo = (request.GET.get("ativo") or "").strip()
+    context = {
+        "materiais": materiais,
+    }
 
-    if buscar:
-        materiais = materiais.filter(
-            Q(codigo__icontains=buscar)
-            | Q(nome__icontains=buscar)
-            | Q(marca__icontains=buscar)
-            | Q(categoria__icontains=buscar)
+    if request.GET.get("partial") == "table" or (
+        _is_htmx(request) and request.headers.get("HX-Target") == "materiais-grid"
+    ):
+        return render(
+            request,
+            "materiais/_tabela_materiais.html",
+            context,
         )
-
-    if categoria and categoria in dict(CATEGORIA_MATERIAL_CHOICES):
-        materiais = materiais.filter(categoria=categoria)
-
-    if ativo == "1":
-        materiais = materiais.filter(ativo=True)
-    elif ativo == "0":
-        materiais = materiais.filter(ativo=False)
 
     return render(
         request,
-        "estoque/listar_materiais.html",
-        {
-            "materiais": materiais,
-            "categorias": CATEGORIA_MATERIAL_CHOICES,
-            "filtro_buscar": buscar,
-            "filtro_categoria": categoria,
-            "filtro_ativo": ativo,
-        },
+        "materiais/listar_materiais.html",
+        context,
     )
 
 
@@ -222,6 +212,19 @@ def cadastrar_material(request):
             material.prefeitura_id = prefeitura_id
             material.secretaria_id = secretaria_id
             material.save()
+            if _is_htmx(request):
+                response = HttpResponse(status=204)
+                response["HX-Trigger"] = json.dumps(
+                    {
+                        "refresh-materials": True,
+                        "closeModal": True,
+                        "showToast": {
+                            "level": "success",
+                            "message": "Material cadastrado com sucesso.",
+                        },
+                    }
+                )
+                return response
             messages.success(request, "Material cadastrado com sucesso.")
             return redirect("estoque:listar_materiais")
     else:
@@ -229,8 +232,14 @@ def cadastrar_material(request):
 
     return render(
         request,
-        "estoque/cadastrar_material.html",
-        {"form": form},
+        "materiais/modal_form_material.html",
+        {
+            "form": form,
+            "modal_title": "Novo material",
+            "modal_id": "materialModal",
+            "modal_show_footer": False,
+            "action_url": request.path,
+        },
     )
 
 
@@ -251,6 +260,19 @@ def editar_material(request, pk):
         form = MaterialForm(request.POST, instance=material)
         if form.is_valid():
             form.save()
+            if _is_htmx(request):
+                response = HttpResponse(status=204)
+                response["HX-Trigger"] = json.dumps(
+                    {
+                        "refresh-materials": True,
+                        "closeModal": True,
+                        "showToast": {
+                            "level": "success",
+                            "message": "Material atualizado com sucesso.",
+                        },
+                    }
+                )
+                return response
             messages.success(request, "Material atualizado com sucesso.")
             return redirect("estoque:listar_materiais")
     else:
@@ -258,8 +280,38 @@ def editar_material(request, pk):
 
     return render(
         request,
-        "estoque/editar_material.html",
-        {"form": form, "material": material},
+        "materiais/modal_form_material.html",
+        {
+            "form": form,
+            "material": material,
+            "modal_title": f"Editar {material.nome}",
+            "modal_id": "materialModal",
+            "modal_show_footer": False,
+            "action_url": request.path,
+        },
+    )
+
+
+@login_required
+def detalhe_material(request, pk):
+    if not _require_admin(request.user):
+        return HttpResponseForbidden("Acesso restrito a administradores.")
+
+    prefeitura_id, secretaria_id = _get_unidade_from_session(request)
+    material = get_object_or_404(
+        Material,
+        pk=pk,
+        prefeitura_id=prefeitura_id,
+        secretaria_id=secretaria_id,
+    )
+    return render(
+        request,
+        "materiais/modal_detalhe_material.html",
+        {
+            "material": material,
+            "modal_title": "Detalhes do material",
+            "modal_id": "materialModal",
+        },
     )
 
 
@@ -410,17 +462,28 @@ def listar_requisicoes(request):
 
     requisicoes = requisicoes.select_related("solicitante")
 
+    context = {
+        "requisicoes": requisicoes,
+        "status_choices": STATUS_REQUISICAO_CHOICES,
+        "filtro_status": status,
+        "filtro_buscar": buscar,
+        "filtro_data_inicio": data_inicio,
+        "filtro_data_fim": data_fim,
+    }
+
+    if request.GET.get("partial") == "table" or (
+        _is_htmx(request) and request.headers.get("HX-Target") == "requisicoes-list"
+    ):
+        return render(
+            request,
+            "estoque/partials/_tabela_requisicoes.html",
+            context,
+        )
+
     return render(
         request,
         "estoque/listar_requisicoes.html",
-        {
-            "requisicoes": requisicoes,
-            "status_choices": STATUS_REQUISICAO_CHOICES,
-            "filtro_status": status,
-            "filtro_buscar": buscar,
-            "filtro_data_inicio": data_inicio,
-            "filtro_data_fim": data_fim,
-        },
+        context,
     )
 
 

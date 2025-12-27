@@ -1,0 +1,59 @@
+{% extends "partials/_modal.html" %}
+
+{% block modal_body %}
+  <div class="row g-3">
+    <div class="col-md-4">
+      <div class="text-secondary small">Código</div>
+      <div class="fw-semibold">{{ material.codigo }}</div>
+    </div>
+    <div class="col-md-8">
+      <div class="text-secondary small">Nome</div>
+      <div class="fw-semibold">{{ material.nome }}</div>
+    </div>
+    <div class="col-md-6">
+      <div class="text-secondary small">Marca</div>
+      <div>{{ material.marca|default:"-" }}</div>
+    </div>
+    <div class="col-md-6">
+      <div class="text-secondary small">Categoria</div>
+      <div>{{ material.categoria|default:"-" }}</div>
+    </div>
+    <div class="col-md-4">
+      <div class="text-secondary small">Unidade</div>
+      <div>{{ material.get_unidade_display }}</div>
+    </div>
+    <div class="col-md-4">
+      <div class="text-secondary small">Qtd. estoque</div>
+      <div>{{ material.quantidade_estoque }}</div>
+    </div>
+    <div class="col-md-4">
+      <div class="text-secondary small">Qtd. mínima</div>
+      <div>{{ material.quantidade_minima }}</div>
+    </div>
+    <div class="col-md-12">
+      <div class="text-secondary small">Descrição</div>
+      <div class="bg-surface-muted rounded p-2">{{ material.descricao|default:"-" }}</div>
+    </div>
+    <div class="col-md-12">
+      <div class="text-secondary small">Status</div>
+      {% if material.ativo %}
+        <span class="badge bg-success badge-status">Ativo</span>
+      {% else %}
+        <span class="badge bg-secondary badge-status">Inativo</span>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block modal_footer %}
+  <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+    <i class="bi bi-x-lg me-1"></i> Fechar
+  </button>
+  <button type="button"
+          class="btn btn-primary"
+          hx-get="{% url 'estoque:editar_material' material.pk %}"
+          hx-target="#modalContainer"
+          hx-swap="innerHTML">
+    <i class="bi bi-pencil me-1"></i> Editar
+  </button>
+{% endblock %}

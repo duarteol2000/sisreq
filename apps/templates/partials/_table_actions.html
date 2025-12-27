@@ -1,0 +1,25 @@
+<div class="btn-group btn-group-sm" role="group">
+  {% if view_url %}
+    <button type="button"
+            class="btn btn-outline-light"
+            hx-get="{{ view_url }}"
+            hx-target="#modalContainer"
+            hx-swap="innerHTML">
+      <i class="bi bi-eye"></i>
+    </button>
+  {% endif %}
+  {% if edit_url %}
+    <button type="button"
+            class="btn btn-outline-primary"
+            hx-get="{{ edit_url }}"
+            hx-target="#modalContainer"
+            hx-swap="innerHTML">
+      <i class="bi bi-pencil"></i>
+    </button>
+  {% endif %}
+  {% if delete_url %}
+    <button type="button" class="btn btn-outline-danger" disabled>
+      <i class="bi bi-trash"></i>
+    </button>
+  {% endif %}
+</div>

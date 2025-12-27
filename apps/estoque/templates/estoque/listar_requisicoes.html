@@ -1,88 +1,89 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %}Requisições{% endblock %}
 
+{% block extra_css %}
+  <style>
+    body {
+      background: #e8ecf5;
+      color: #0f172a;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+  </style>
+{% endblock %}
+
 {% block content %}
-<div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center">
-    <h2>Requisições</h2>
+<div class="mx-auto mt-4" style="max-width: 1400px;">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Requisições</h1>
     {% if request.user.tipo == "FUNCIONARIO" or request.user.tipo == "ADMINISTRADOR" %}
-      <a href="{% url 'estoque:nova_requisicao' %}" class="btn btn-primary">Nova requisição</a>
+      <a href="{% url 'estoque:nova_requisicao' %}" class="btn btn-primary">
+        Nova requisição
+      </a>
     {% endif %}
   </div>
-  <form method="get" class="row g-2 mt-3">
-    <div class="col-md-4">
-      <input type="text"
-             name="buscar"
-             value="{{ filtro_buscar }}"
-             class="form-control form-control-sm"
-             placeholder="Buscar por nº, nome ou e-mail">
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <form method="get" class="row g-2">
+        <div class="col-md-4">
+          <input type="text"
+                 name="buscar"
+                 value="{{ filtro_buscar }}"
+                 class="form-control form-control-sm"
+                 placeholder="Buscar por nº, nome ou e-mail">
+        </div>
+        <div class="col-md-3">
+          <select name="status" class="form-select form-select-sm">
+            <option value="">Todos os status</option>
+            {% for value, label in status_choices %}
+              <option value="{{ value }}" {% if filtro_status == value %}selected{% endif %}>
+                {{ label }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-md-2">
+          <input type="date"
+                 name="data_inicio"
+                 value="{{ filtro_data_inicio }}"
+                 class="form-control form-control-sm"
+                 placeholder="Data início">
+        </div>
+        <div class="col-md-2">
+          <input type="date"
+                 name="data_fim"
+                 value="{{ filtro_data_fim }}"
+                 class="form-control form-control-sm"
+                 placeholder="Data fim">
+        </div>
+        <div class="col-md-1 d-grid">
+          <button type="submit" class="btn btn-sm btn-primary">Filtrar</button>
+        </div>
+      </form>
     </div>
-    <div class="col-md-3">
-      <select name="status" class="form-select form-select-sm">
-        <option value="">Todos os status</option>
-        {% for value, label in status_choices %}
-          <option value="{{ value }}" {% if filtro_status == value %}selected{% endif %}>
-            {{ label }}
-          </option>
-        {% endfor %}
-      </select>
+  </div>
+
+  <div class="card">
+    <div class="card-body"
+         {% if request.user.tipo == "ADMINISTRADOR" %}
+         hx-get="?partial=table"
+         hx-trigger="load, every 20s"
+         hx-target="#requisicoes-list"
+         hx-swap="outerHTML"
+         {% endif %}>
+      {% include "estoque/partials/_tabela_requisicoes.html" %}
     </div>
-    <div class="col-md-2">
-      <input type="date"
-             name="data_inicio"
-             value="{{ filtro_data_inicio }}"
-             class="form-control form-control-sm"
-             placeholder="Data início">
-    </div>
-    <div class="col-md-2">
-      <input type="date"
-             name="data_fim"
-             value="{{ filtro_data_fim }}"
-             class="form-control form-control-sm"
-             placeholder="Data fim">
-    </div>
-    <div class="col-md-1 d-grid">
-      <button type="submit" class="btn btn-sm btn-primary">Filtrar</button>
-    </div>
-  </form>
-  <table class="table table-striped mt-3">
-    <thead>
-      <tr>
-        <th>Nº Requisição</th>
-        <th>Solicitante</th>
-        <th>Status</th>
-        <th>Data criação</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for requisicao in requisicoes %}
-      <tr>
-        <td>{{ requisicao.numero_requisicao }}</td>
-        <td>{{ requisicao.solicitante.nome_completo }}</td>
-        <td>{{ requisicao.get_status_display }}</td>
-        <td>{{ requisicao.data_criacao|date:"d/m/Y H:i" }}</td>
-        <td>
-          <a href="{% url 'estoque:detalhar_requisicao' requisicao.pk %}" class="btn btn-sm btn-secondary">Detalhes</a>
-          {% if request.user.tipo == "ADMINISTRADOR" and requisicao.status == "PENDENTE" %}
-            <a href="{% url 'estoque:analisar_requisicao' requisicao.pk %}" class="btn btn-sm btn-warning">Analisar</a>
-          {% endif %}
-          {% if request.user.tipo == "ADMINISTRADOR" %}
-            {% if requisicao.status == "APROVADA" or requisicao.status == "APROVADA_PARCIAL" %}
-              {% if not requisicao.data_entrega %}
-                <a href="{% url 'estoque:confirmar_entrega' requisicao.pk %}" class="btn btn-sm btn-success">Confirmar entrega</a>
-              {% endif %}
-            {% endif %}
-          {% endif %}
-        </td>
-      </tr>
-      {% empty %}
-      <tr>
-        <td colspan="5">Nenhuma requisição encontrada.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  </div>
 </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  {{ block.super }}
+  <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.9.12"></script>
 {% endblock %}
